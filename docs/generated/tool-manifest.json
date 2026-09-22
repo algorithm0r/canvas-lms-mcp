@@ -448,6 +448,36 @@
       "structuredOutput": false
     },
     {
+      "name": "delete_quiz",
+      "title": "Delete Quiz",
+      "domain": "quizzes",
+      "description": "Permanently delete a Classic quiz from a course, including its questions and every student submission. Classic Quizzes only; use delete_new_quiz for a New Quiz (LTI). Canvas also removes the module item that pointed at the quiz.",
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "access": "write",
+      "primaryAudience": "educator",
+      "relatedWorkflows": [],
+      "structuredOutput": false
+    },
+    {
+      "name": "delete_quiz_question",
+      "title": "Delete Quiz Question",
+      "domain": "quizzes",
+      "description": "Permanently delete a single question from a Classic quiz. Classic Quizzes only; use delete_new_quiz_item for a New Quiz item.",
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "access": "write",
+      "primaryAudience": "educator",
+      "relatedWorkflows": [],
+      "structuredOutput": false
+    },
+    {
       "name": "create_new_quiz",
       "title": "Create New Quiz",
       "domain": "new_quizzes",

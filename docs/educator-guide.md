@@ -102,6 +102,13 @@ The server includes 50 write tools. All require appropriate Canvas permissions. 
 |-----------|------|--------------|-------------|
 | Create a rubric | `create_rubric` | Creates a rubric with criteria and rating levels; can link to an assignment immediately | No -- no `delete_rubric`/`update_rubric` tool in this server; remove or unlink via Canvas UI |
 
+### Classic Quizzes
+
+| Operation | Tool | What It Does | Reversible? |
+|-----------|------|--------------|-------------|
+| Delete a Classic quiz | `delete_quiz` | Deletes a Classic quiz with its questions and every student submission; Canvas also removes its module item | No -- permanent |
+| Delete a Classic quiz question | `delete_quiz_question` | Deletes one question from a Classic quiz | No -- permanent; re-author via Canvas UI |
+
 ### New Quizzes
 
 | Operation | Tool | What It Does | Reversible? |

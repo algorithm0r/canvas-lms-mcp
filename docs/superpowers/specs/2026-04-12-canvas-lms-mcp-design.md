@@ -344,7 +344,7 @@ All errors returned as structured MCP content, never thrown:
 | `submit_rubric_assessment` | write | Grade via rubric criteria |
 | `create_rubric` | write | Create a new rubric in a course with criteria and rating levels |
 
-#### Quizzes (7 tools)
+#### Quizzes (9 tools)
 
 | Tool | Type | Description |
 |------|------|-------------|
@@ -355,6 +355,8 @@ All errors returned as structured MCP content, never thrown:
 | `get_quiz_submission_answers` | read | Student's answered questions |
 | `score_quiz_question` | write | Score an essay/open-ended question |
 | `get_quiz_submission_events` | read | Chronological event log for a Classic Quiz submission (session_started, question_answered, page_blurred, etc.) |
+| `delete_quiz` | write | Permanently delete a Classic quiz, its questions, and every student submission |
+| `delete_quiz_question` | write | Permanently delete one question from a Classic quiz |
 
 #### Quiz Question Responses (1 tool)
 
