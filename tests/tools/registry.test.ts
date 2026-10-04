@@ -219,7 +219,7 @@ describe('getAllTools', () => {
     expect(Array.isArray(tools)).toBe(true)
   })
 
-  it('returns all 167 tools across all domains', () => {
+  it('returns all 167 default tools across all domains (169 with assignmentSubmission)', () => {
     const tools = getAllTools(buildFullMockCanvas())
     const names = tools.map((t) => t.name)
 

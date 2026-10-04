@@ -7,7 +7,7 @@ import { GATED_DESTRUCTIVE_TOOLS, UNGATED_DELETE_TOOLS } from '../../src/tools/d
 //
 // The README's "Destructive tool policy" table is a *safety* list: a reader
 // decides whether `block` covers their risk by reading it. A table that lists
-// six of the seven blocked tools is worse than no table, because it reads as
+// eight of the nine blocked tools is worse than no table, because it reads as
 // complete. Partial documentation of a write-tool list has already shipped in
 // this repo once, so this asserts completeness in both directions rather than
 // merely that the section exists.
