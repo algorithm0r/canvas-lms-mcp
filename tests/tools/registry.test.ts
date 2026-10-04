@@ -219,7 +219,7 @@ describe('getAllTools', () => {
     expect(Array.isArray(tools)).toBe(true)
   })
 
-  it('returns all 155 tools across all domains', () => {
+  it('returns all 167 tools across all domains', () => {
     const tools = getAllTools(buildFullMockCanvas())
     const names = tools.map((t) => t.name)
 
@@ -423,14 +423,14 @@ describe('getAllTools', () => {
     expect(names).toContain('list_appointment_group_groups')
     expect(names).toContain('next_appointment')
 
-    expect(tools).toHaveLength(165)
+    expect(tools).toHaveLength(167)
   })
 
-  it('returns 167 tools when assignmentSubmission feature flag is enabled', () => {
+  it('returns 169 tools when assignmentSubmission feature flag is enabled', () => {
     const tools = getAllTools(buildFullMockCanvas(), undefined, undefined, {
       assignmentSubmission: true,
     })
-    expect(tools).toHaveLength(167)
+    expect(tools).toHaveLength(169)
     expect(tools.map((t) => t.name)).toContain('submit_assignment')
     expect(tools.map((t) => t.name)).toContain('upload_submission_file')
   })

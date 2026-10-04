@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.1",
   "packageName": "canvas-lms-mcp",
-  "toolCount": 167,
+  "toolCount": 169,
   "tools": [
     {
       "name": "health_check",
@@ -451,7 +451,7 @@
       "name": "delete_quiz",
       "title": "Delete Quiz",
       "domain": "quizzes",
-      "description": "Permanently delete a Classic quiz from a course, including its questions and every student submission. Classic Quizzes only; use delete_new_quiz for a New Quiz (LTI). Canvas also removes the module item that pointed at the quiz.",
+      "description": "Permanently delete a Classic quiz from a course, including its questions and every student submission. Classic Quizzes only; use delete_new_quiz for a New Quiz (LTI).",
       "annotations": {
         "destructiveHint": true,
         "idempotentHint": true,

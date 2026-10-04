@@ -168,7 +168,7 @@ export function quizTools(canvas: CanvasClient): ToolDefinition[] {
       name: 'delete_quiz',
       title: 'Delete Quiz',
       description:
-        'Permanently delete a Classic quiz from a course, including its questions and every student submission. Classic Quizzes only; use delete_new_quiz for a New Quiz (LTI). Canvas also removes the module item that pointed at the quiz.',
+        'Permanently delete a Classic quiz from a course, including its questions and every student submission. Classic Quizzes only; use delete_new_quiz for a New Quiz (LTI).',
       inputSchema: {
         course_id: canvasIdInput().describe('The Canvas course ID'),
         quiz_id: canvasIdInput().describe('The Canvas quiz ID to delete (Classic Quizzes only)'),
@@ -196,6 +196,8 @@ export function quizTools(canvas: CanvasClient): ToolDefinition[] {
         const quiz_id = params.quiz_id as CanvasId
         const question_id = params.question_id as CanvasId
         await canvas.quizzes.deleteQuestion(course_id, quiz_id, question_id)
+        // Canvas answers 204 No Content here, unlike delete_quiz, which passes
+        // through the deleted quiz object Canvas returns, so build a receipt.
         return { deleted: true, question_id }
       },
     },

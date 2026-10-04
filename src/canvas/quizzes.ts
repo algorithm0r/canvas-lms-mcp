@@ -23,9 +23,9 @@ export class QuizzesModule {
   }
 
   /**
-   * Delete a Classic quiz. Canvas answers with the deleted quiz's body (with
-   * its `version_number` bumped) rather than a 204, and it removes the module
-   * item that pointed at the quiz on its own.
+   * Delete a Classic quiz. Per the Canvas Quizzes API docs, this "deletes a
+   * quiz and returns the deleted quiz object".
+   * @see https://canvas.instructure.com/doc/api/quizzes.html#method.quizzes/quizzes_api.destroy
    */
   async delete(courseId: CanvasId, quizId: CanvasId): Promise<CanvasQuiz> {
     return this.client.request<CanvasQuiz>(`/api/v1/courses/${courseId}/quizzes/${quizId}`, {
@@ -33,6 +33,11 @@ export class QuizzesModule {
     })
   }
 
+  /**
+   * Delete a question from a Classic quiz. Per the Canvas Quiz Questions API
+   * docs, a successful deletion returns 204 No Content, so there is no body.
+   * @see https://canvas.instructure.com/doc/api/quiz_questions.html
+   */
   async deleteQuestion(courseId: CanvasId, quizId: CanvasId, questionId: CanvasId): Promise<void> {
     await this.client.request<void>(
       `/api/v1/courses/${courseId}/quizzes/${quizId}/questions/${questionId}`,
