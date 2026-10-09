@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import type { CanvasClient } from '../canvas'
 import type {
   CanvasAssignmentGroup,
@@ -16,6 +15,7 @@ import {
 import type { GroupModeResult } from './grade-engine'
 import type { Pseudonymizer } from '../pseudonym/pseudonymizer'
 import type { ToolDefinition } from './types'
+import { type CanvasId, canvasIdFromResponse, canvasIdInput } from '../canvas/id'
 
 // ── Output assembly ──────────────────────────────────────────────────────────
 
@@ -126,15 +126,8 @@ export function gradeExplanationTools(
         '- When CANVAS_PSEUDONYMIZE_STUDENTS is enabled and you are passing a student_id, first call ' +
         'resolve_pseudonym to obtain the real Canvas user_id.',
       inputSchema: {
-        course_id: z
-          .number()
-          .int()
-          .positive()
-          .describe('Canvas course ID to compute the grade for.'),
-        student_id: z
-          .number()
-          .int()
-          .positive()
+        course_id: canvasIdInput().describe('Canvas course ID to compute the grade for.'),
+        student_id: canvasIdInput()
           .optional()
           .describe(
             'Canvas user_id of the student to compute the grade for. Omit to compute for the ' +
@@ -142,10 +135,7 @@ export function gradeExplanationTools(
               'When CANVAS_PSEUDONYMIZE_STUDENTS is enabled, pass the numeric Canvas user_id after ' +
               'resolving the pseudonym via resolve_pseudonym.',
           ),
-        assignment_group_id: z
-          .number()
-          .int()
-          .positive()
+        assignment_group_id: canvasIdInput()
           .optional()
           .describe(
             'Narrow the output to a single assignment group. When omitted all groups are included and ' +
@@ -158,10 +148,13 @@ export function gradeExplanationTools(
         openWorldHint: true,
       },
       handler: async (params) => {
-        const courseId = params.course_id as number
-        const studentParam = params.student_id as number | undefined
-        const studentId: number | 'self' = studentParam === undefined ? 'self' : studentParam
-        const groupFilter = params.assignment_group_id as number | undefined
+        const courseId = params.course_id as CanvasId
+        const studentParam = params.student_id as CanvasId | undefined
+        // `CanvasId | 'self'` collapses to `string`, so the compiler no longer
+        // narrows on `studentId === 'self'`. The annotation is kept because it is
+        // the contract a reader needs; the runtime check is unchanged.
+        const studentId: CanvasId | 'self' = studentParam === undefined ? 'self' : studentParam
+        const groupFilter = params.assignment_group_id as CanvasId | undefined
 
         const course = await canvas.courses.get(courseId)
 
@@ -218,7 +211,9 @@ export function gradeExplanationTools(
 
         let selectedGroups = groups
         if (groupFilter !== undefined) {
-          selectedGroups = groups.filter((g) => g.id === groupFilter)
+          // Canonical-string comparison: `g.id` is a response value, `groupFilter`
+          // a migrated input (BRU-2730 §4.1).
+          selectedGroups = groups.filter((g) => canvasIdFromResponse(g.id) === groupFilter)
           const matched = selectedGroups[0]
           if (matched === undefined) {
             caveats.push(`Assignment group ${groupFilter} was not found in this course.`)

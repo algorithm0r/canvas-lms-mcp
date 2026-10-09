@@ -3,6 +3,7 @@ import type { CanvasClient } from '../canvas'
 import type { CanvasAssignment, CanvasSubmission } from '../canvas/types'
 import type { Pseudonymizer } from '../pseudonym/pseudonymizer'
 import type { ToolDefinition } from './types'
+import { type CanvasId, canvasIdFromResponse, canvasIdInput } from '../canvas/id'
 
 // ── Caveats ──────────────────────────────────────────────────────────────────
 
@@ -93,13 +94,11 @@ export function submissionsAwaitingGradingTools(
         '- When CANVAS_PSEUDONYMIZE_STUDENTS is enabled, student names are replaced with ' +
         'pseudonyms. Use resolve_pseudonym to look up the real identity.',
       inputSchema: {
-        course_id: z
-          .number()
-          .int()
-          .positive()
-          .describe('Canvas course ID to scan for submissions awaiting grading.'),
+        course_id: canvasIdInput().describe(
+          'Canvas course ID to scan for submissions awaiting grading.',
+        ),
         assignment_ids: z
-          .array(z.number().int().positive())
+          .array(canvasIdInput())
           .optional()
           .describe(
             'Limit the scan to these specific assignment IDs (numeric Canvas IDs). ' +
@@ -131,8 +130,8 @@ export function submissionsAwaitingGradingTools(
         openWorldHint: true,
       },
       handler: async (params) => {
-        const courseId = params.course_id as number
-        const assignmentIds = params.assignment_ids as number[] | undefined
+        const courseId = params.course_id as CanvasId
+        const assignmentIds = params.assignment_ids as CanvasId[] | undefined
         // Zod defaults are not applied when the handler is invoked directly (tests),
         // so the toggles are interpreted with explicit comparisons: undefined means
         // "use the default" (include = true, only_pending_review = false).
@@ -193,7 +192,7 @@ export function submissionsAwaitingGradingTools(
         // 'submitted' and 'pending_review', so filtering happens client-side below.
         const rawSubmissions = await canvas.submissions.listForStudents(courseId, {
           student_ids: ['all'],
-          assignment_ids: toFetch.map((a) => a.id),
+          assignment_ids: toFetch.map((a) => canvasIdFromResponse(a.id)),
           include: ['user'],
         })
 
