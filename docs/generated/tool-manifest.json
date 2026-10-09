@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.1",
   "packageName": "canvas-lms-mcp",
-  "toolCount": 169,
+  "toolCount": 171,
   "tools": [
     {
       "name": "health_check",

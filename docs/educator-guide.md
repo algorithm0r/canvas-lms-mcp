@@ -66,7 +66,7 @@ Posts a reply to a discussion topic. Supports HTML formatting.
 
 ## Write Operations Reference
 
-The server includes 52 write tools. All require appropriate Canvas permissions. They are grouped below by domain; the grading tools you'll use most often are listed first.
+The server includes 54 write tools. All require appropriate Canvas permissions. They are grouped below by domain; the grading tools you'll use most often are listed first.
 
 ### Grading & Feedback
 
