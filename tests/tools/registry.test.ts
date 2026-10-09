@@ -47,6 +47,8 @@ function buildFullMockCanvas(): CanvasClient {
       scoreQuestion: async () => {},
       getSubmissionEvents: async () => [],
       setExtension: async () => [],
+      delete: async () => ({}),
+      deleteQuestion: async () => undefined,
     },
     files: {
       list: async () => [],
@@ -217,7 +219,7 @@ describe('getAllTools', () => {
     expect(Array.isArray(tools)).toBe(true)
   })
 
-  it('returns all 155 tools across all domains', () => {
+  it('returns all 167 default tools across all domains (169 with assignmentSubmission)', () => {
     const tools = getAllTools(buildFullMockCanvas())
     const names = tools.map((t) => t.name)
 
@@ -255,6 +257,8 @@ describe('getAllTools', () => {
     expect(names).toContain('list_quiz_submissions')
     expect(names).toContain('list_quiz_questions')
     expect(names).toContain('get_quiz_submission_answers')
+    expect(names).toContain('delete_quiz')
+    expect(names).toContain('delete_quiz_question')
     expect(names).toContain('score_quiz_question')
     expect(names).toContain('get_quiz_submission_events')
     // Files (6)
@@ -419,14 +423,14 @@ describe('getAllTools', () => {
     expect(names).toContain('list_appointment_group_groups')
     expect(names).toContain('next_appointment')
 
-    expect(tools).toHaveLength(165)
+    expect(tools).toHaveLength(167)
   })
 
-  it('returns 167 tools when assignmentSubmission feature flag is enabled', () => {
+  it('returns 169 tools when assignmentSubmission feature flag is enabled', () => {
     const tools = getAllTools(buildFullMockCanvas(), undefined, undefined, {
       assignmentSubmission: true,
     })
-    expect(tools).toHaveLength(167)
+    expect(tools).toHaveLength(169)
     expect(tools.map((t) => t.name)).toContain('submit_assignment')
     expect(tools.map((t) => t.name)).toContain('upload_submission_file')
   })
@@ -448,6 +452,8 @@ describe('getAllTools', () => {
       'submit_rubric_assessment',
       'create_rubric',
       'score_quiz_question',
+      'delete_quiz',
+      'delete_quiz_question',
       'post_discussion_entry',
       'create_discussion',
       'update_discussion',
@@ -515,6 +521,8 @@ describe('getAllTools', () => {
       'submit_rubric_assessment',
       'create_rubric',
       'score_quiz_question',
+      'delete_quiz',
+      'delete_quiz_question',
       'post_discussion_entry',
       'create_discussion',
       'update_discussion',

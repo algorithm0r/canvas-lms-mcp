@@ -164,5 +164,42 @@ export function quizTools(canvas: CanvasClient): ToolDefinition[] {
         return canvas.quizzes.getSubmissionEvents(course_id, quiz_id, submission_id, attempt)
       },
     },
+    {
+      name: 'delete_quiz',
+      title: 'Delete Quiz',
+      description:
+        'Permanently delete a Classic quiz from a course, including its questions and every student submission. Classic Quizzes only; use delete_new_quiz for a New Quiz (LTI).',
+      inputSchema: {
+        course_id: canvasIdInput().describe('The Canvas course ID'),
+        quiz_id: canvasIdInput().describe('The Canvas quiz ID to delete (Classic Quizzes only)'),
+      },
+      annotations: { destructiveHint: true, idempotentHint: true, openWorldHint: true },
+      handler: async (params) => {
+        const course_id = params.course_id as CanvasId
+        const quiz_id = params.quiz_id as CanvasId
+        return canvas.quizzes.delete(course_id, quiz_id)
+      },
+    },
+    {
+      name: 'delete_quiz_question',
+      title: 'Delete Quiz Question',
+      description:
+        'Permanently delete a single question from a Classic quiz. Classic Quizzes only; use delete_new_quiz_item for a New Quiz item.',
+      inputSchema: {
+        course_id: canvasIdInput().describe('The Canvas course ID'),
+        quiz_id: canvasIdInput().describe('The Canvas quiz ID (Classic Quizzes only)'),
+        question_id: canvasIdInput().describe('The Canvas quiz question ID to delete'),
+      },
+      annotations: { destructiveHint: true, idempotentHint: true, openWorldHint: true },
+      handler: async (params) => {
+        const course_id = params.course_id as CanvasId
+        const quiz_id = params.quiz_id as CanvasId
+        const question_id = params.question_id as CanvasId
+        await canvas.quizzes.deleteQuestion(course_id, quiz_id, question_id)
+        // Canvas answers 204 No Content here, unlike delete_quiz, which passes
+        // through the deleted quiz object Canvas returns, so build a receipt.
+        return { deleted: true, question_id }
+      },
+    },
   ]
 }
