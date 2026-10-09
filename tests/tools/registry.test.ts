@@ -37,6 +37,8 @@ function buildFullMockCanvas(): CanvasClient {
       getAssessment: async () => ({}),
       submitAssessment: async () => ({}),
       create: async () => ({}),
+      associate: async () => ({}),
+      delete: async () => ({}),
     },
     quizzes: {
       list: async () => [],
@@ -251,6 +253,8 @@ describe('getAllTools', () => {
     expect(names).toContain('get_rubric_assessment')
     expect(names).toContain('submit_rubric_assessment')
     expect(names).toContain('create_rubric')
+    expect(names).toContain('attach_rubric')
+    expect(names).toContain('delete_rubric')
     // Quizzes (7)
     expect(names).toContain('list_quizzes')
     expect(names).toContain('get_quiz')
@@ -451,6 +455,8 @@ describe('getAllTools', () => {
       'comment_on_submission',
       'submit_rubric_assessment',
       'create_rubric',
+      'attach_rubric',
+      'delete_rubric',
       'score_quiz_question',
       'delete_quiz',
       'delete_quiz_question',
@@ -520,6 +526,8 @@ describe('getAllTools', () => {
       'comment_on_submission',
       'submit_rubric_assessment',
       'create_rubric',
+      'attach_rubric',
+      'delete_rubric',
       'score_quiz_question',
       'delete_quiz',
       'delete_quiz_question',

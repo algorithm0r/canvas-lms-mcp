@@ -117,7 +117,7 @@ Once configured, try these prompts with your AI client:
 | Submissions | `list_submissions`, `get_submission`, `grade_submission`, `comment_on_submission` |
 | Submissions Awaiting Grading | `list_submissions_awaiting_grading` |
 | Submission Files | `list_course_submission_files` |
-| Rubrics | `list_rubrics`, `get_rubric`, `get_rubric_assessment`, `submit_rubric_assessment`, `create_rubric` |
+| Rubrics | `list_rubrics`, `get_rubric`, `get_rubric_assessment`, `submit_rubric_assessment`, `create_rubric`, `attach_rubric`, `delete_rubric` |
 | Quizzes | `list_quizzes`, `get_quiz`, `list_quiz_submissions`, `list_quiz_questions`, `get_quiz_submission_answers`, `score_quiz_question`, `get_quiz_submission_events`, `delete_quiz`, `delete_quiz_question` |
 | Quiz Question Responses | `get_quiz_question_responses` |
 | Quiz Accommodations | `list_student_quiz_accommodations`, `set_student_quiz_accommodation` |
@@ -317,7 +317,7 @@ const courses = await canvas.courses.list()
 | `--issuer` | `CANVAS_MCP_ISSUER` | (required in `oauth_brokered`) | Public URL of this server; OAuth issuer and resource prefix |
 | `doctor` | -- | -- | Print an identity-safe setup report (also `auth status`); exit 1 when something is missing |
 | `--role` | `CANVAS_ROLE` | (all tools) | Filter tools by Canvas role: `student`, `teacher`, or `admin` (see [Role-based tool filtering](#role-based-tool-filtering)) |
-| `--destructive-tools=<mode>` | `CANVAS_DESTRUCTIVE_TOOLS` | `allow` | `allow` or `block`. `block` unregisters the nine irreversible delete tools (see [Destructive tool policy](#destructive-tool-policy)) |
+| `--destructive-tools=<mode>` | `CANVAS_DESTRUCTIVE_TOOLS` | `allow` | `allow` or `block`. `block` unregisters the ten irreversible delete tools (see [Destructive tool policy](#destructive-tool-policy)) |
 
 ## Environment Variables
 
@@ -344,13 +344,13 @@ const courses = await canvas.courses.list()
 | `CANVAS_PSEUDONYM_DIR` | No | Absolute path that overrides the default pseudonym map directory |
 | `CANVAS_PSEUDONYM_AUDIT_LOG` | No | Path to an append-only file that mirrors `resolve_pseudonym` audit lines (stderr is always written) |
 | `CANVAS_PROVENANCE_FENCING` | No | **On by default.** Set to exactly `false` to disable [provenance fencing](#provenance-fencing-untrusted-canvas-content) |
-| `CANVAS_DESTRUCTIVE_TOOLS` | No | `allow` (default) or `block`. Set to exactly `block` to unregister the nine irreversible delete tools (see [Destructive tool policy](#destructive-tool-policy)) |
+| `CANVAS_DESTRUCTIVE_TOOLS` | No | `allow` (default) or `block`. Set to exactly `block` to unregister the ten irreversible delete tools (see [Destructive tool policy](#destructive-tool-policy)) |
 
 ## Destructive tool policy
 
 Canvas has no undo. This server cannot restore anything it deletes -- every recovery
 story for a mistaken delete is something you do outside this tooling, in Canvas or
-with your institution's admin. `CANVAS_DESTRUCTIVE_TOOLS=block` removes the nine
+with your institution's admin. `CANVAS_DESTRUCTIVE_TOOLS=block` removes the ten
 irreversible delete tools from the server entirely, so no amount of model confusion
 or [prompt injection](#provenance-fencing-untrusted-canvas-content) can reach them.
 
@@ -363,7 +363,7 @@ canvas-lms-mcp --destructive-tools=block --base-url https://school.instructure.c
 | Mode | Behaviour |
 |------|-----------|
 | `allow` | **Default.** Every tool is registered -- unchanged from previous releases. |
-| `block` | The nine tools below are not registered at all. They are absent from `tools/list`, and a call naming one is refused by the MCP protocol layer before any Canvas request is made. |
+| `block` | The ten tools below are not registered at all. They are absent from `tools/list`, and a call naming one is refused by the MCP protocol layer before any Canvas request is made. |
 
 **Blocked by `block`:**
 
@@ -376,6 +376,7 @@ canvas-lms-mcp --destructive-tools=block --base-url https://school.instructure.c
 | `delete_quiz_question` | One Classic-quiz question and its responses; re-authoring is manual |
 | `delete_discussion` | The whole reply thread, including student-authored posts |
 | `delete_page` | Page body and revision history (keyed by URL slug, not a numeric ID) |
+| `delete_rubric` | The rubric and **every assignment association on it** |
 | `delete_file` | A file, addressed by a **global** ID with no course scoping in the call |
 | `delete_appointment_group` | Every reservation -- and it **emails every signed-up student** |
 

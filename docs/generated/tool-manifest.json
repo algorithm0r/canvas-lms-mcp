@@ -349,6 +349,35 @@
       "structuredOutput": false
     },
     {
+      "name": "attach_rubric",
+      "title": "Attach Rubric",
+      "domain": "rubrics",
+      "description": "Attach an existing course rubric to an assignment, so one rubric can be shared across many assignments instead of creating a duplicate per assignment with create_rubric. Returns the new rubric association.",
+      "annotations": {
+        "destructiveHint": true,
+        "openWorldHint": true
+      },
+      "access": "write",
+      "primaryAudience": "educator",
+      "relatedWorkflows": [],
+      "structuredOutput": false
+    },
+    {
+      "name": "delete_rubric",
+      "title": "Delete Rubric",
+      "domain": "rubrics",
+      "description": "Permanently delete a rubric from a course, removing it from every assignment it is attached to. Returns the deleted rubric.",
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "access": "write",
+      "primaryAudience": "educator",
+      "relatedWorkflows": [],
+      "structuredOutput": false
+    },
+    {
       "name": "list_quizzes",
       "title": "List Quizzes",
       "domain": "quizzes",

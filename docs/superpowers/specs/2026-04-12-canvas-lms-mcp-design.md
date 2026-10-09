@@ -334,7 +334,7 @@ All errors returned as structured MCP content, never thrown:
 | `grade_submission` | write | Post a grade to a submission |
 | `comment_on_submission` | write | Post a comment, optionally with a file attachment (uses Canvas's comment file upload workflow — not general file uploads) |
 
-#### Rubrics (5 tools)
+#### Rubrics (7 tools)
 
 | Tool | Type | Description |
 |------|------|-------------|
@@ -343,6 +343,8 @@ All errors returned as structured MCP content, never thrown:
 | `get_rubric_assessment` | read | Existing assessment for a submission |
 | `submit_rubric_assessment` | write | Grade via rubric criteria |
 | `create_rubric` | write | Create a new rubric in a course with criteria and rating levels |
+| `attach_rubric` | write | Attach an existing course rubric to an assignment (share one rubric across many assignments) |
+| `delete_rubric` | write | Permanently delete a rubric and every assignment association on it |
 
 #### Quizzes (9 tools)
 
@@ -1082,7 +1084,7 @@ as the un-annotated part of each line. Two caveats on reading it as a historical
 - OAuth 2.0 flow — **shipped in 1.30.0** as the `oauth_brokered` profile
 
 ### Deliberate constraints
-- Destructive write operations are opt-out, not opt-in: 52 write tools ship, including 11 `delete_*` tools, but `CANVAS_DESTRUCTIVE_TOOLS=block` (v1.29.0, PR #337) makes the server refuse to register 9 of those deletes at all — "a real boundary, not a UX filter". The other two (`delete_peer_review`, `delete_module_item`) stay registered by design and are named as such in the README, so the gap is visible rather than implied (see [Destructive tool policy](../../../README.md#destructive-tool-policy)). All three numbers are CI-gated against the generated manifest (BRU-2695) — do not hand-edit them
+- Destructive write operations are opt-out, not opt-in: 54 write tools ship, including 12 `delete_*` tools, but `CANVAS_DESTRUCTIVE_TOOLS=block` (v1.29.0, PR #337) makes the server refuse to register 10 of those deletes at all — "a real boundary, not a UX filter". The other two (`delete_peer_review`, `delete_module_item`) stay registered by design and are named as such in the README, so the gap is visible rather than implied (see [Destructive tool policy](../../../README.md#destructive-tool-policy)). All three numbers are CI-gated against the generated manifest (BRU-2695) — do not hand-edit them
 - ~~No account-level admin tools~~ — **false since 0.5.0**: `list_accounts`, `get_account`, `list_account_users`, `list_account_courses` and `list_account_notifications` all ship. Unlike the exclusions above, this list is written in the present tense, so the line is struck rather than annotated (BRU-2695)
 - Canvas is not the sole permission authority: the MCP server makes its own access-control decisions in two places — `CANVAS_DESTRUCTIVE_TOOLS=block` above, and `Pseudonymizer({ sharedAcrossCallers: true })` (PR #344), which makes the server refuse to register `resolve_pseudonym` on the HTTP transport regardless of configuration
 
