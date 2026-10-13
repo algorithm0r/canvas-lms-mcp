@@ -37,6 +37,8 @@ function buildFullMockCanvas(): CanvasClient {
       getAssessment: async () => ({}),
       submitAssessment: async () => ({}),
       create: async () => ({}),
+      associate: async () => ({}),
+      delete: async () => ({}),
     },
     quizzes: {
       list: async () => [],
@@ -226,7 +228,7 @@ describe('getAllTools', () => {
     expect(Array.isArray(tools)).toBe(true)
   })
 
-  it('returns all 172 default tools across all domains (174 with assignmentSubmission)', () => {
+  it('returns all 174 default tools across all domains (176 with assignmentSubmission)', () => {
     const tools = getAllTools(buildFullMockCanvas())
     const names = tools.map((t) => t.name)
 
@@ -252,12 +254,14 @@ describe('getAllTools', () => {
     expect(names).toContain('comment_on_submission')
     // Submission Files (1)
     expect(names).toContain('list_course_submission_files')
-    // Rubrics (5)
+    // Rubrics (7)
     expect(names).toContain('list_rubrics')
     expect(names).toContain('get_rubric')
     expect(names).toContain('get_rubric_assessment')
     expect(names).toContain('submit_rubric_assessment')
     expect(names).toContain('create_rubric')
+    expect(names).toContain('attach_rubric')
+    expect(names).toContain('delete_rubric')
     // Quizzes (7)
     expect(names).toContain('list_quizzes')
     expect(names).toContain('get_quiz')
@@ -435,14 +439,14 @@ describe('getAllTools', () => {
     expect(names).toContain('list_appointment_group_groups')
     expect(names).toContain('next_appointment')
 
-    expect(tools).toHaveLength(172)
+    expect(tools).toHaveLength(174)
   })
 
-  it('returns 174 tools when assignmentSubmission feature flag is enabled', () => {
+  it('returns 176 tools when assignmentSubmission feature flag is enabled', () => {
     const tools = getAllTools(buildFullMockCanvas(), undefined, undefined, {
       assignmentSubmission: true,
     })
-    expect(tools).toHaveLength(174)
+    expect(tools).toHaveLength(176)
     expect(tools.map((t) => t.name)).toContain('submit_assignment')
     expect(tools.map((t) => t.name)).toContain('upload_submission_file')
   })
@@ -463,6 +467,8 @@ describe('getAllTools', () => {
       'comment_on_submission',
       'submit_rubric_assessment',
       'create_rubric',
+      'attach_rubric',
+      'delete_rubric',
       'score_quiz_question',
       'delete_quiz',
       'delete_quiz_question',
@@ -532,6 +538,8 @@ describe('getAllTools', () => {
       'comment_on_submission',
       'submit_rubric_assessment',
       'create_rubric',
+      'attach_rubric',
+      'delete_rubric',
       'score_quiz_question',
       'delete_quiz',
       'delete_quiz_question',
