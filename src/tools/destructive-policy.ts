@@ -29,7 +29,7 @@ export const DEFAULT_DESTRUCTIVE_TOOLS_MODE: DestructiveToolsMode = 'allow'
  * The ten irreversible deletes gated by `block` (design §3, extended by the two Classic-quiz deletes and `delete_rubric`).
  *
  * The boundary is *irreversible destruction of existing state*, not the
- * `destructiveHint` annotation (48 tools carry it) and not the `delete_` name
+ * `destructiveHint` annotation (54 tools carry it) and not the `delete_` name
  * prefix on its own — `delete_peer_review` carries the prefix and is
  * deliberately excluded below.
  */

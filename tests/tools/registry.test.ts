@@ -212,6 +212,13 @@ function buildFullMockCanvas(): CanvasClient {
       listGroups: async () => [],
       nextAppointment: async () => [],
     },
+    activityStream: {
+      getSummary: async () => [],
+      getStream: async () => [],
+    },
+    planner: {
+      listItems: async () => [],
+    },
   } as unknown as CanvasClient
 }
 
@@ -221,7 +228,7 @@ describe('getAllTools', () => {
     expect(Array.isArray(tools)).toBe(true)
   })
 
-  it('returns all 169 default tools across all domains (171 with assignmentSubmission)', () => {
+  it('returns all 174 default tools across all domains (176 with assignmentSubmission)', () => {
     const tools = getAllTools(buildFullMockCanvas())
     const names = tools.map((t) => t.name)
 
@@ -247,7 +254,7 @@ describe('getAllTools', () => {
     expect(names).toContain('comment_on_submission')
     // Submission Files (1)
     expect(names).toContain('list_course_submission_files')
-    // Rubrics (5)
+    // Rubrics (7)
     expect(names).toContain('list_rubrics')
     expect(names).toContain('get_rubric')
     expect(names).toContain('get_rubric_assessment')
@@ -291,9 +298,11 @@ describe('getAllTools', () => {
     expect(names).toContain('list_course_enrollments')
     expect(names).toContain('enroll_user')
     expect(names).toContain('remove_enrollment')
-    // Discussions (7)
+    // Discussions (9)
     expect(names).toContain('list_discussions')
     expect(names).toContain('get_discussion')
+    expect(names).toContain('list_group_discussions')
+    expect(names).toContain('get_group_discussion')
     expect(names).toContain('list_announcements')
     expect(names).toContain('post_discussion_entry')
     expect(names).toContain('create_discussion')
@@ -358,12 +367,15 @@ describe('getAllTools', () => {
     expect(names).toContain('get_outcome_rollups')
     expect(names).toContain('get_outcome_contributing_scores')
     expect(names).toContain('get_outcome_mastery_distribution')
-    // Student (5)
+    // Student (8)
     expect(names).toContain('get_my_courses')
     expect(names).toContain('get_my_grades')
     expect(names).toContain('get_my_submissions')
     expect(names).toContain('get_my_upcoming_assignments')
     expect(names).toContain('get_my_submission_feedback')
+    expect(names).toContain('get_my_activity_stream_summary')
+    expect(names).toContain('get_my_activity_stream')
+    expect(names).toContain('list_my_planner_items')
     // Dashboard (4)
     expect(names).toContain('get_dashboard_cards')
     expect(names).toContain('get_todo_items')
@@ -427,14 +439,14 @@ describe('getAllTools', () => {
     expect(names).toContain('list_appointment_group_groups')
     expect(names).toContain('next_appointment')
 
-    expect(tools).toHaveLength(169)
+    expect(tools).toHaveLength(174)
   })
 
-  it('returns 171 tools when assignmentSubmission feature flag is enabled', () => {
+  it('returns 176 tools when assignmentSubmission feature flag is enabled', () => {
     const tools = getAllTools(buildFullMockCanvas(), undefined, undefined, {
       assignmentSubmission: true,
     })
-    expect(tools).toHaveLength(171)
+    expect(tools).toHaveLength(176)
     expect(tools.map((t) => t.name)).toContain('submit_assignment')
     expect(tools.map((t) => t.name)).toContain('upload_submission_file')
   })
