@@ -420,6 +420,8 @@ export interface CanvasRubric {
   title: string
   points_possible: number
   data: CanvasRubricCriterion[]
+  /** Present only when the rubric is fetched with an association include. */
+  associations?: CanvasRubricAssociation[]
 }
 
 export interface CanvasRubricCriterion {

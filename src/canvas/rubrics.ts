@@ -1,4 +1,5 @@
 import type { CanvasHttpClient } from './client'
+import type { CanvasQueryParams } from './query'
 import type {
   CanvasRubric,
   CanvasRubricAssessment,
@@ -6,6 +7,19 @@ import type {
   CanvasSubmission,
 } from './types'
 import type { CanvasId } from './id'
+
+export type RubricInclude =
+  | 'assessments'
+  | 'graded_assessments'
+  | 'peer_assessments'
+  | 'associations'
+  | 'assignment_associations'
+  | 'course_associations'
+  | 'account_associations'
+
+export interface GetRubricOptions {
+  include?: ReadonlyArray<RubricInclude>
+}
 
 export interface RubricRatingInput {
   description: string
@@ -43,8 +57,19 @@ export class RubricsModule {
     return this.client.paginate<CanvasRubric>(`/api/v1/courses/${courseId}/rubrics`)
   }
 
-  async get(courseId: CanvasId, rubricId: CanvasId): Promise<CanvasRubric> {
-    return this.client.request<CanvasRubric>(`/api/v1/courses/${courseId}/rubrics/${rubricId}`)
+  async get(
+    courseId: CanvasId,
+    rubricId: CanvasId,
+    options: GetRubricOptions = {},
+  ): Promise<CanvasRubric> {
+    if (!options.include || options.include.length === 0) {
+      return this.client.request<CanvasRubric>(`/api/v1/courses/${courseId}/rubrics/${rubricId}`)
+    }
+    const query: CanvasQueryParams = {}
+    query.include = options.include
+    return this.client.request<CanvasRubric>(`/api/v1/courses/${courseId}/rubrics/${rubricId}`, {
+      query,
+    })
   }
 
   /** Canvas answers the DELETE with the deleted rubric inside a `{ rubric }` envelope, which this unwraps. */

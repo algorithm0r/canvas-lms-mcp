@@ -1,13 +1,25 @@
 import { z } from 'zod'
 import type { CanvasClient } from '../canvas'
 import type {
+  GetRubricOptions,
   RubricAssociationInput,
   RubricAttachOptions,
   RubricCriterionInput,
   RubricCreateInput,
+  RubricInclude,
 } from '../canvas/rubrics'
 import type { ToolDefinition } from './types'
 import { type CanvasId, canvasIdInput } from '../canvas/id'
+
+const RUBRIC_INCLUDE = [
+  'assessments',
+  'graded_assessments',
+  'peer_assessments',
+  'associations',
+  'assignment_associations',
+  'course_associations',
+  'account_associations',
+] as const
 
 export function rubricTools(canvas: CanvasClient): ToolDefinition[] {
   return [
@@ -30,10 +42,17 @@ export function rubricTools(canvas: CanvasClient): ToolDefinition[] {
     {
       name: 'get_rubric',
       title: 'Get Rubric',
-      description: 'Get details for a single rubric by ID, including criteria.',
+      description:
+        'Get details for a single rubric by ID, including criteria. Use include=["assignment_associations"] to retrieve the rubric association IDs needed for rubric assessment writes.',
       inputSchema: {
         course_id: canvasIdInput().describe('The Canvas course ID'),
         rubric_id: canvasIdInput().describe('The Canvas rubric ID'),
+        include: z
+          .array(z.enum(RUBRIC_INCLUDE))
+          .optional()
+          .describe(
+            'Related Canvas records to include. Use assignment_associations to retrieve association IDs for linked assignments. Canvas honours only one association scope per request; extra association values are ignored.',
+          ),
       },
       annotations: {
         readOnlyHint: true,
@@ -42,7 +61,10 @@ export function rubricTools(canvas: CanvasClient): ToolDefinition[] {
       handler: async (params) => {
         const course_id = params.course_id as CanvasId
         const rubric_id = params.rubric_id as CanvasId
-        return canvas.rubrics.get(course_id, rubric_id)
+        if (params.include === undefined) return canvas.rubrics.get(course_id, rubric_id)
+        const options: GetRubricOptions = {}
+        options.include = params.include as ReadonlyArray<RubricInclude>
+        return canvas.rubrics.get(course_id, rubric_id, options)
       },
     },
     {
