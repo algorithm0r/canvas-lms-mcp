@@ -47,11 +47,13 @@ export class RubricsModule {
     return this.client.request<CanvasRubric>(`/api/v1/courses/${courseId}/rubrics/${rubricId}`)
   }
 
-  /** Canvas answers a rubric DELETE with the deleted rubric's body. */
+  /** Canvas answers the DELETE with the deleted rubric inside a `{ rubric }` envelope, which this unwraps. */
   async delete(courseId: CanvasId, rubricId: CanvasId): Promise<CanvasRubric> {
-    return this.client.request<CanvasRubric>(`/api/v1/courses/${courseId}/rubrics/${rubricId}`, {
-      method: 'DELETE',
-    })
+    const envelope = await this.client.request<{ rubric: CanvasRubric }>(
+      `/api/v1/courses/${courseId}/rubrics/${rubricId}`,
+      { method: 'DELETE' },
+    )
+    return envelope.rubric
   }
 
   async getAssessment(
@@ -121,6 +123,8 @@ export class RubricsModule {
    * `POST /courses/:id/rubric_associations`, so one rubric can be shared across
    * many assignments instead of `create` minting a duplicate per assignment.
    * Same bracket-notation form encoding as `create`.
+   * Canvas returns the full rubric beside the association; only the association is
+   * returned, so looping over many assignments does not repeat the criteria.
    */
   async associate(
     courseId: CanvasId,
@@ -139,13 +143,14 @@ export class RubricsModule {
     if (options.hide_score_total !== undefined) {
       params.append('rubric_association[hide_score_total]', String(options.hide_score_total))
     }
-    return this.client.request<CanvasRubricAssociation>(
-      `/api/v1/courses/${courseId}/rubric_associations`,
-      {
-        method: 'POST',
-        body: params.toString(),
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      },
-    )
+    const envelope = await this.client.request<{
+      rubric: CanvasRubric
+      rubric_association: CanvasRubricAssociation
+    }>(`/api/v1/courses/${courseId}/rubric_associations`, {
+      method: 'POST',
+      body: params.toString(),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+    return envelope.rubric_association
   }
 }

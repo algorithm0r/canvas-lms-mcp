@@ -446,6 +446,8 @@ export interface CanvasRubricAssociation {
   hide_score_total?: boolean
   hide_points?: boolean
   hide_outcome_results?: boolean
+  /** Canvas adds this to the association returned from a create. */
+  association_count?: number
 }
 
 export interface CanvasRubricAssessment {
