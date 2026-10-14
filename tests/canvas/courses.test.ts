@@ -268,5 +268,22 @@ describe('CoursesModule', () => {
         body: JSON.stringify({ course: { default_view: 'modules' } }),
       })
     })
+
+    it('sends the grade display settings nested under course', async () => {
+      vi.spyOn(client, 'request').mockResolvedValueOnce({
+        id: 1,
+        name: 'CS 101',
+        course_code: 'CS101',
+        workflow_state: 'available',
+      })
+
+      await courses.update(1, { apply_assignment_group_weights: false, hide_final_grades: true })
+      expect(client.request).toHaveBeenCalledWith('/api/v1/courses/1', {
+        method: 'PUT',
+        body: JSON.stringify({
+          course: { apply_assignment_group_weights: false, hide_final_grades: true },
+        }),
+      })
+    })
   })
 })
