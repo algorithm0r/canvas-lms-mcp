@@ -253,6 +253,18 @@ export function assignmentTools(canvas: CanvasClient): ToolDefinition[] {
           .string()
           .optional()
           .describe('Due date in ISO 8601 format (e.g. 2026-05-01T23:59:00Z)'),
+        lock_at: z
+          .string()
+          .optional()
+          .describe(
+            'The date after which the assignment locks and stops accepting submissions, in ISO 8601 format. Must be after due_at when there is one',
+          ),
+        unlock_at: z
+          .string()
+          .optional()
+          .describe(
+            'The date the assignment becomes available to students, in ISO 8601 format. Must be before due_at when there is one',
+          ),
         submission_types: z
           .array(z.string())
           .optional()
@@ -288,6 +300,8 @@ export function assignmentTools(canvas: CanvasClient): ToolDefinition[] {
           description?: string
           points_possible?: number
           due_at?: string
+          lock_at?: string
+          unlock_at?: string
           submission_types?: string[]
           assignment_group_id?: CanvasId
           published?: boolean
@@ -311,6 +325,18 @@ export function assignmentTools(canvas: CanvasClient): ToolDefinition[] {
           .string()
           .optional()
           .describe('New due date in ISO 8601 format (e.g. 2026-05-01T23:59:00Z)'),
+        lock_at: z
+          .string()
+          .optional()
+          .describe(
+            'New date after which the assignment locks and stops accepting submissions, in ISO 8601 format. Must be after due_at when there is one',
+          ),
+        unlock_at: z
+          .string()
+          .optional()
+          .describe(
+            'New date the assignment becomes available to students, in ISO 8601 format. Must be before due_at when there is one',
+          ),
         submission_types: z.array(z.string()).optional().describe('New allowed submission types'),
         assignment_group_id: canvasIdInput().optional().describe('New assignment group ID'),
         published: z
@@ -341,6 +367,8 @@ export function assignmentTools(canvas: CanvasClient): ToolDefinition[] {
           description?: string
           points_possible?: number
           due_at?: string
+          lock_at?: string
+          unlock_at?: string
           submission_types?: string[]
           assignment_group_id?: CanvasId
           published?: boolean

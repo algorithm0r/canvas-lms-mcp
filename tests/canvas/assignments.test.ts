@@ -274,6 +274,25 @@ describe('AssignmentsModule', () => {
       })
     })
 
+    it('sends lock_at and unlock_at nested under assignment on update', async () => {
+      vi.spyOn(client, 'request').mockResolvedValueOnce({ id: 1 })
+      await assignments.update(100, 1, {
+        due_at: '2026-11-15T23:59:00Z',
+        lock_at: '2026-11-22T23:59:00Z',
+        unlock_at: '2026-11-01T00:00:00Z',
+      })
+      expect(client.request).toHaveBeenCalledWith('/api/v1/courses/100/assignments/1', {
+        method: 'PUT',
+        body: JSON.stringify({
+          assignment: {
+            due_at: '2026-11-15T23:59:00Z',
+            lock_at: '2026-11-22T23:59:00Z',
+            unlock_at: '2026-11-01T00:00:00Z',
+          },
+        }),
+      })
+    })
+
     it('updates an assignment', async () => {
       const mockAssignment: CanvasAssignment = {
         id: 1,
