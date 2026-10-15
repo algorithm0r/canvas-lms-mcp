@@ -319,6 +319,24 @@ describe('assignmentTools', () => {
         grade_group_students_individually: true,
       })
     })
+
+    it('passes lock_at and unlock_at through', async () => {
+      const canvas = buildMockCanvas()
+      const tool = assignmentTools(canvas).find((t) => t.name === 'create_assignment')!
+      await tool.handler({
+        course_id: '1',
+        name: 'Essay draft',
+        due_at: '2026-11-15T23:59:00Z',
+        lock_at: '2026-11-22T23:59:00Z',
+        unlock_at: '2026-11-01T00:00:00Z',
+      })
+      expect(canvas.assignments.create).toHaveBeenCalledWith('1', {
+        name: 'Essay draft',
+        due_at: '2026-11-15T23:59:00Z',
+        lock_at: '2026-11-22T23:59:00Z',
+        unlock_at: '2026-11-01T00:00:00Z',
+      })
+    })
   })
 
   describe('update_assignment', () => {
@@ -376,6 +394,30 @@ describe('assignmentTools', () => {
       expect(tool.inputSchema).toHaveProperty('published')
       expect(tool.inputSchema).toHaveProperty('omit_from_final_grade')
       expect(tool.inputSchema).toHaveProperty('grade_group_students_individually')
+    })
+
+    it('passes lock_at and unlock_at through', async () => {
+      const canvas = buildMockCanvas()
+      const tool = assignmentTools(canvas).find((t) => t.name === 'update_assignment')!
+      await tool.handler({
+        course_id: '1',
+        assignment_id: '101',
+        lock_at: '2026-11-22T23:59:00Z',
+        unlock_at: '2026-11-01T00:00:00Z',
+      })
+      expect(canvas.assignments.update).toHaveBeenCalledWith('1', '101', {
+        lock_at: '2026-11-22T23:59:00Z',
+        unlock_at: '2026-11-01T00:00:00Z',
+      })
+    })
+
+    it('exposes lock_at and unlock_at in the create and update input schemas', () => {
+      const tools = assignmentTools(buildMockCanvas())
+      for (const name of ['create_assignment', 'update_assignment']) {
+        const tool = tools.find((t) => t.name === name)!
+        expect(tool.inputSchema).toHaveProperty('lock_at')
+        expect(tool.inputSchema).toHaveProperty('unlock_at')
+      }
     })
 
     it('returns the updated assignment', async () => {
