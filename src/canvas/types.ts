@@ -1048,6 +1048,8 @@ export interface CreateAssignmentParams {
   description?: string
   points_possible?: number
   due_at?: string
+  lock_at?: string
+  unlock_at?: string
   submission_types?: string[]
   assignment_group_id?: CanvasId
   published?: boolean
