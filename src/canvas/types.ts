@@ -158,6 +158,8 @@ export interface UpdateCourseParams {
   default_view?: 'feed' | 'wiki' | 'modules' | 'assignments' | 'syllabus'
   syllabus_body?: string
   grading_standard_id?: CanvasId | null
+  apply_assignment_group_weights?: boolean
+  hide_final_grades?: boolean
 }
 
 // --- Assignments ---

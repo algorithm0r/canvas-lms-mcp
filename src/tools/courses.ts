@@ -207,6 +207,14 @@ export function courseTools(canvas: CanvasClient): ToolDefinition[] {
           .optional()
           .describe('Default course home page view'),
         syllabus_body: z.string().optional().describe('HTML body for the course syllabus'),
+        apply_assignment_group_weights: z
+          .boolean()
+          .optional()
+          .describe('Whether the final grade is weighted by assignment group percentages'),
+        hide_final_grades: z
+          .boolean()
+          .optional()
+          .describe('Whether to hide the totals in the student grades summary'),
       },
       annotations: {
         destructiveHint: true,
@@ -222,6 +230,8 @@ export function courseTools(canvas: CanvasClient): ToolDefinition[] {
           end_at?: string
           default_view?: 'feed' | 'wiki' | 'modules' | 'assignments' | 'syllabus'
           syllabus_body?: string
+          apply_assignment_group_weights?: boolean
+          hide_final_grades?: boolean
         }
         return canvas.courses.update(course_id, fields)
       },

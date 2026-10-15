@@ -324,6 +324,22 @@ describe('courseTools', () => {
       expect(tool.inputSchema).toHaveProperty('end_at')
       expect(tool.inputSchema).toHaveProperty('default_view')
       expect(tool.inputSchema).toHaveProperty('syllabus_body')
+      expect(tool.inputSchema).toHaveProperty('apply_assignment_group_weights')
+      expect(tool.inputSchema).toHaveProperty('hide_final_grades')
+    })
+
+    it('passes apply_assignment_group_weights and hide_final_grades through', async () => {
+      const canvas = buildMockCanvas()
+      const tool = courseTools(canvas).find((t) => t.name === 'update_course')!
+      await tool.handler({
+        course_id: '1',
+        apply_assignment_group_weights: false,
+        hide_final_grades: true,
+      })
+      expect(canvas.courses.update).toHaveBeenCalledWith('1', {
+        apply_assignment_group_weights: false,
+        hide_final_grades: true,
+      })
     })
 
     it('calls canvas.courses.update with course_id and fields', async () => {
