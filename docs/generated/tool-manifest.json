@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.1",
   "packageName": "canvas-lms-mcp",
-  "toolCount": 177,
+  "toolCount": 183,
   "tools": [
     {
       "name": "health_check",
@@ -885,6 +885,93 @@
       },
       "access": "read",
       "primaryAudience": "shared",
+      "relatedWorkflows": [],
+      "structuredOutput": false
+    },
+    {
+      "name": "list_group_categories",
+      "title": "List Group Categories",
+      "domain": "groups",
+      "description": "List the group categories (group sets) in a course. A group assignment points at a category through its group_category_id, and create_group needs a category ID, so use this to find one.",
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": true
+      },
+      "access": "read",
+      "primaryAudience": "educator",
+      "relatedWorkflows": [],
+      "structuredOutput": false
+    },
+    {
+      "name": "create_group_category",
+      "title": "Create Group Category",
+      "domain": "groups",
+      "description": "Create a new, empty group category (group set) in a course.",
+      "annotations": {
+        "destructiveHint": true,
+        "openWorldHint": true
+      },
+      "access": "write",
+      "primaryAudience": "educator",
+      "relatedWorkflows": [],
+      "structuredOutput": false
+    },
+    {
+      "name": "create_group",
+      "title": "Create Group",
+      "domain": "groups",
+      "description": "Create a group inside a group category. This is addressed by group_category_id, not by course ID: find the category with list_group_categories. The new group has no members; add them with add_group_member.",
+      "annotations": {
+        "destructiveHint": true,
+        "openWorldHint": true
+      },
+      "access": "write",
+      "primaryAudience": "educator",
+      "relatedWorkflows": [],
+      "structuredOutput": false
+    },
+    {
+      "name": "delete_group",
+      "title": "Delete Group",
+      "domain": "groups",
+      "description": "Permanently delete a group and remove all of its members. The students stay enrolled in the course and the group category remains. Creating a group again does not restore the same group.",
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "access": "write",
+      "primaryAudience": "educator",
+      "relatedWorkflows": [],
+      "structuredOutput": false
+    },
+    {
+      "name": "add_group_member",
+      "title": "Add Group Member",
+      "domain": "groups",
+      "description": "Add a user to a group. Returns the membership Canvas reports; if the user is already a member, Canvas returns the existing membership. Canvas allows a user only one group per category. Reverse with remove_group_member.",
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "access": "write",
+      "primaryAudience": "educator",
+      "relatedWorkflows": [],
+      "structuredOutput": false
+    },
+    {
+      "name": "remove_group_member",
+      "title": "Remove Group Member",
+      "domain": "groups",
+      "description": "Remove a user from a group. The user stays enrolled in the course. Reverse with add_group_member.",
+      "annotations": {
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "access": "write",
+      "primaryAudience": "educator",
       "relatedWorkflows": [],
       "structuredOutput": false
     },

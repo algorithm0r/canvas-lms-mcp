@@ -4,7 +4,7 @@
 // (`docs/superpowers/specs/2026-08-31-bru-2390-destructive-confirmation.md`).
 //
 // This is the only control in that design that offers a *hard* guarantee. Under
-// `block` the eleven irreversible delete tools are never registered, so the MCP
+// `block` the twelve irreversible delete tools are never registered, so the MCP
 // dispatch table refuses the call before any handler exists to run. Everything
 // else the design proposes — preview/confirm tokens, elicitation — is a nudge a
 // confused or prompt-injected model can satisfy on its own within a single turn
@@ -26,7 +26,7 @@ export type DestructiveToolsMode = 'allow' | 'block'
 export const DEFAULT_DESTRUCTIVE_TOOLS_MODE: DestructiveToolsMode = 'allow'
 
 /**
- * The eleven irreversible deletes gated by `block` (design §3, extended by the two Classic-quiz deletes, `delete_rubric` and `delete_module`).
+ * The twelve irreversible deletes gated by `block` (design §3, extended by the two Classic-quiz deletes, `delete_rubric`, `delete_module` and `delete_group`).
  *
  * The boundary is *irreversible destruction of existing state*, not the
  * `destructiveHint` annotation (54 tools carry it) and not the `delete_` name
@@ -58,6 +58,9 @@ export const GATED_DESTRUCTIVE_TOOLS: ReadonlySet<string> = new Set([
   'delete_file',
   // Cancels every reservation and emails every signed-up student.
   'delete_appointment_group',
+  // The group and every membership in it; recreating a group does not restore
+  // the same group identity or any group-scoped state.
+  'delete_group',
 ])
 
 /**
