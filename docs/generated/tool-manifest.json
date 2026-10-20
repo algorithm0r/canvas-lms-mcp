@@ -949,7 +949,7 @@
       "name": "add_group_member",
       "title": "Add Group Member",
       "domain": "groups",
-      "description": "Add a user to a group. Returns the membership Canvas reports; if the user is already a member, Canvas returns the existing membership. Canvas allows a user only one group per category. Reverse with remove_group_member.",
+      "description": "Add a user to a group. Returns the membership Canvas reports; if the user is already a member, Canvas returns the existing membership. remove_group_member removes this membership; it does not restore any other group membership Canvas changed.",
       "annotations": {
         "destructiveHint": true,
         "idempotentHint": true,

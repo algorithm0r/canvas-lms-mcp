@@ -46,6 +46,12 @@ describe('groupTools', () => {
     just_created: true,
   }
 
+  const mockGroupWithUsers = {
+    ...mockGroup,
+    leader: { id: '5', display_name: 'Real Name' },
+    users: [{ id: '7', name: 'Real Student' }],
+  }
+
   function buildMockCanvas(): CanvasClient {
     return {
       groups: {
@@ -53,8 +59,8 @@ describe('groupTools', () => {
         listMembers: vi.fn().mockResolvedValue([mockUser]),
         listCategories: vi.fn().mockResolvedValue([mockCategory]),
         createCategory: vi.fn().mockResolvedValue(mockCategory),
-        create: vi.fn().mockResolvedValue(mockGroup),
-        delete: vi.fn().mockResolvedValue(mockGroup),
+        create: vi.fn().mockResolvedValue(mockGroupWithUsers),
+        delete: vi.fn().mockResolvedValue(mockGroupWithUsers),
         addMember: vi.fn().mockResolvedValue(mockMembership),
         removeMember: vi.fn().mockResolvedValue({ ok: true }),
       },
@@ -135,11 +141,12 @@ describe('groupTools', () => {
 
     it('delegates to canvas.groups.createCategory', async () => {
       const canvas = buildMockCanvas()
-      await tool(canvas, 'create_group_category').handler({
+      const result = await tool(canvas, 'create_group_category').handler({
         course_id: '1',
         name: 'Project Groups',
       })
       expect(canvas.groups.createCategory).toHaveBeenCalledWith('1', { name: 'Project Groups' })
+      expect(result).toEqual(mockCategory)
     })
   })
 
@@ -154,7 +161,7 @@ describe('groupTools', () => {
 
     it('delegates to canvas.groups.create with the category ID', async () => {
       const canvas = buildMockCanvas()
-      await tool(canvas, 'create_group').handler({
+      const result = await tool(canvas, 'create_group').handler({
         group_category_id: '10',
         name: 'Red One',
         join_level: 'invitation_only',
@@ -164,6 +171,9 @@ describe('groupTools', () => {
         description: undefined,
         join_level: 'invitation_only',
       })
+      expect(result).toEqual(mockGroup)
+      expect(result).not.toHaveProperty('leader')
+      expect(result).not.toHaveProperty('users')
     })
   })
 
@@ -181,6 +191,8 @@ describe('groupTools', () => {
       const result = await tool(canvas, 'delete_group').handler({ group_id: '1' })
       expect(canvas.groups.delete).toHaveBeenCalledWith('1')
       expect(result).toEqual(mockGroup)
+      expect(result).not.toHaveProperty('leader')
+      expect(result).not.toHaveProperty('users')
     })
   })
 
@@ -284,6 +296,23 @@ describe('groupTools', () => {
         env: enabled ? { CANVAS_PSEUDONYMIZE_STUDENTS: 'true' } : {},
       })
     }
+
+    it.each([
+      ['create_group', { group_category_id: '10', name: 'Group A' }],
+      ['delete_group', { group_id: '1' }],
+    ] as const)(
+      '%s omits embedded user identities when pseudonymization is enabled',
+      async (name, params) => {
+        const canvas = buildMockCanvas()
+        const writeTool = groupTools(canvas, makePseudonymizer()).find((t) => t.name === name)!
+        const result = await writeTool.handler(params)
+        expect(result).toEqual(mockGroup)
+        expect(result).not.toHaveProperty('leader')
+        expect(result).not.toHaveProperty('users')
+        expect(mockGroupWithUsers).toHaveProperty('leader.display_name', 'Real Name')
+        expect(mockGroupWithUsers.users[0].name).toBe('Real Student')
+      },
+    )
 
     describe('list_group_members', () => {
       it('pseudonymizes member names when enabled', async () => {

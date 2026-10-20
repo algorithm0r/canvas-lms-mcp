@@ -60,7 +60,13 @@ describe('GroupsModule', () => {
       group_category_id: 10,
       members_count: 0,
     })
-    await groups.create(10, { name: 'Red One', join_level: 'invitation_only' })
+    const result = await groups.create(10, { name: 'Red One', join_level: 'invitation_only' })
+    expect(result).toEqual({
+      id: 1,
+      name: 'Red One',
+      group_category_id: 10,
+      members_count: 0,
+    })
     expect(client.request).toHaveBeenCalledWith('/api/v1/group_categories/10/groups', {
       method: 'POST',
       body: JSON.stringify({ name: 'Red One', join_level: 'invitation_only' }),

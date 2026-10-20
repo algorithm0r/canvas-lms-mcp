@@ -2,8 +2,18 @@ import { z } from 'zod'
 import type { CanvasClient } from '../canvas'
 import type { Pseudonymizer } from '../pseudonym/pseudonymizer'
 import type { ToolDefinition } from './types'
+import type { CanvasGroup } from '../canvas/types'
 import type { CreateGroupParams } from '../canvas/groups'
 import { type CanvasId, canvasIdInput } from '../canvas/id'
+
+// Group write responses may embed user identities even when pseudonymization is enabled.
+function stripGroupUsers({
+  leader: _leader,
+  users: _users,
+  ...group
+}: CanvasGroup & { leader?: unknown; users?: unknown }): CanvasGroup {
+  return group
+}
 
 export function groupTools(canvas: CanvasClient, pseudonymizer?: Pseudonymizer): ToolDefinition[] {
   return [
@@ -93,7 +103,9 @@ export function groupTools(canvas: CanvasClient, pseudonymizer?: Pseudonymizer):
         join_level: z
           .enum(['parent_context_auto_join', 'parent_context_request', 'invitation_only'])
           .optional()
-          .describe('Who may join the group without being added by a teacher'),
+          .describe(
+            'Join policy for the group. Only affects self-joining in categories that allow multiple memberships (e.g. student-organized); for teacher-managed group sets, self-signup is a category setting.',
+          ),
       },
       annotations: {
         destructiveHint: true,
@@ -101,11 +113,12 @@ export function groupTools(canvas: CanvasClient, pseudonymizer?: Pseudonymizer):
       },
       handler: async (params) => {
         const group_category_id = params.group_category_id as CanvasId
-        return canvas.groups.create(group_category_id, {
+        const group = await canvas.groups.create(group_category_id, {
           name: params.name as string,
           description: params.description as string | undefined,
           join_level: params.join_level as CreateGroupParams['join_level'],
         })
+        return stripGroupUsers(group)
       },
     },
     {
@@ -124,7 +137,7 @@ export function groupTools(canvas: CanvasClient, pseudonymizer?: Pseudonymizer):
       },
       handler: async (params) => {
         const group_id = params.group_id as CanvasId
-        return canvas.groups.delete(group_id)
+        return stripGroupUsers(await canvas.groups.delete(group_id))
       },
     },
     {
@@ -132,7 +145,7 @@ export function groupTools(canvas: CanvasClient, pseudonymizer?: Pseudonymizer):
       title: 'Add Group Member',
       audience: 'educator',
       description:
-        'Add a user to a group. Returns the membership Canvas reports; if the user is already a member, Canvas returns the existing membership. Canvas allows a user only one group per category. Reverse with remove_group_member.',
+        'Add a user to a group. Returns the membership Canvas reports; if the user is already a member, Canvas returns the existing membership. remove_group_member removes this membership; it does not restore any other group membership Canvas changed.',
       inputSchema: {
         group_id: canvasIdInput().describe('The Canvas group ID'),
         user_id: canvasIdInput().describe('The Canvas user ID to add'),

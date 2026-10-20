@@ -853,7 +853,7 @@ All tools include MCP tool annotations to help clients (Claude, ChatGPT) make sa
 
 | Annotation | Applied to | Effect |
 |------------|-----------|--------|
-| `readOnlyHint: true` | All 122 read tools | Clients may auto-execute without confirmation |
+| `readOnlyHint: true` | All 123 read tools | Clients may auto-execute without confirmation |
 | `destructiveHint: true` | All 60 write tools | Clients should ask for user confirmation before executing |
 | `idempotentHint: true` | `grade_submission`, `submit_rubric_assessment`, `score_quiz_question` | Safe to retry — re-grading with same value is a no-op |
 | `openWorldHint: true` | All tools | Tools interact with external Canvas API |

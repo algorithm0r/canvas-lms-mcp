@@ -401,7 +401,7 @@ canvas-lms-mcp --destructive-tools=block --base-url https://school.instructure.c
 | `delete_module` | The module and its **whole ordered item list**; the linked assignments, pages, quizzes, files and discussions are not deleted, but the module itself has to be rebuilt item by item |
 | `delete_file` | A file, addressed by a **global** ID with no course scoping in the call |
 | `delete_appointment_group` | Every reservation -- and it **emails every signed-up student** |
-| `delete_group` | The group and **every membership in it**; recreating a group does not restore the same group |
+| `delete_group` | The group and **every membership in it**, addressed by a **global** group ID with no course scoping in the call; recreating a group does not restore the same group |
 
 **Not blocked:** `delete_peer_review` and `delete_module_item`. Both are deletes this
 server can itself undo (`create_peer_review` / `create_module_item` recreate the row) and
