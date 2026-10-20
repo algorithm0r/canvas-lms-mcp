@@ -66,7 +66,7 @@ Posts a reply to a discussion topic. Supports HTML formatting.
 
 ## Write Operations Reference
 
-The server includes 55 write tools. All require appropriate Canvas permissions. They are grouped below by domain; the grading tools you'll use most often are listed first.
+The server includes 60 write tools. All require appropriate Canvas permissions. They are grouped below by domain; the grading tools you'll use most often are listed first.
 
 ### Grading & Feedback
 
@@ -169,6 +169,16 @@ The server includes 55 write tools. All require appropriate Canvas permissions. 
 |-----------|------|--------------|-------------|
 | Create a calendar event | `create_calendar_event` | Creates a new Canvas calendar event | No -- no `delete_calendar_event` tool in this server; remove via Canvas UI |
 | Update a calendar event | `update_calendar_event` | Updates an existing calendar event; only provided fields change | Yes (call again to revert fields) |
+
+### Groups
+
+| Operation | Tool | What It Does | Reversible? |
+|-----------|------|--------------|-------------|
+| Create a group category | `create_group_category` | Creates an empty group category (group set) in a course | No -- no `delete_group_category` tool in this server; remove via Canvas UI |
+| Create a group | `create_group` | Creates a group inside a group category, addressed by the category ID | Yes (call `delete_group`) |
+| Delete a group | `delete_group` | Deletes the group and removes all of its members; the students stay enrolled and the category remains | No -- permanent |
+| Add a group member | `add_group_member` | Adds a user to a group and returns the membership Canvas reports | Partly (call `remove_group_member`; other memberships in the category are not restored) |
+| Remove a group member | `remove_group_member` | Removes a user from a group; the user stays enrolled in the course | Yes (call `add_group_member`) |
 
 ### Peer Reviews
 

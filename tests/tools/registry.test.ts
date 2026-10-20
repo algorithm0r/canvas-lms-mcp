@@ -228,7 +228,7 @@ describe('getAllTools', () => {
     expect(Array.isArray(tools)).toBe(true)
   })
 
-  it('returns all 175 default tools across all domains (177 with assignmentSubmission)', () => {
+  it('returns all 181 default tools across all domains (183 with assignmentSubmission)', () => {
     const tools = getAllTools(buildFullMockCanvas())
     const names = tools.map((t) => t.name)
 
@@ -290,9 +290,15 @@ describe('getAllTools', () => {
     expect(names).toContain('get_profile')
     expect(names).toContain('search_users')
     expect(names).toContain('list_course_users')
-    // Groups (2)
+    // Groups (8)
     expect(names).toContain('list_groups')
     expect(names).toContain('list_group_members')
+    expect(names).toContain('list_group_categories')
+    expect(names).toContain('create_group_category')
+    expect(names).toContain('create_group')
+    expect(names).toContain('delete_group')
+    expect(names).toContain('add_group_member')
+    expect(names).toContain('remove_group_member')
     // Enrollments (4)
     expect(names).toContain('list_enrollments')
     expect(names).toContain('list_course_enrollments')
@@ -440,14 +446,14 @@ describe('getAllTools', () => {
     expect(names).toContain('list_appointment_group_groups')
     expect(names).toContain('next_appointment')
 
-    expect(tools).toHaveLength(175)
+    expect(tools).toHaveLength(181)
   })
 
-  it('returns 177 tools when assignmentSubmission feature flag is enabled', () => {
+  it('returns 183 tools when assignmentSubmission feature flag is enabled', () => {
     const tools = getAllTools(buildFullMockCanvas(), undefined, undefined, {
       assignmentSubmission: true,
     })
-    expect(tools).toHaveLength(177)
+    expect(tools).toHaveLength(183)
     expect(tools.map((t) => t.name)).toContain('submit_assignment')
     expect(tools.map((t) => t.name)).toContain('upload_submission_file')
   })
@@ -480,6 +486,11 @@ describe('getAllTools', () => {
       'send_conversation',
       'create_peer_review',
       'delete_peer_review',
+      'create_group_category',
+      'create_group',
+      'delete_group',
+      'add_group_member',
+      'remove_group_member',
       'create_module',
       'update_module',
       'delete_module',
@@ -552,6 +563,11 @@ describe('getAllTools', () => {
       'send_conversation',
       'create_peer_review',
       'delete_peer_review',
+      'create_group_category',
+      'create_group',
+      'delete_group',
+      'add_group_member',
+      'remove_group_member',
       'create_module',
       'update_module',
       'delete_module',

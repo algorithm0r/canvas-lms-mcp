@@ -636,6 +636,28 @@ export interface CanvasGroup {
   members_count: number
 }
 
+/** A group set. Group assignments point at a category through `group_category_id`. */
+export interface CanvasGroupCategory {
+  id: CanvasId
+  name: string
+  role?: string | null
+  self_signup?: string | null
+  group_limit?: number | null
+  context_type?: string
+  course_id?: CanvasId
+  groups_count?: number
+}
+
+/** Canvas serializes only these fields for a membership (no user names). */
+export interface CanvasGroupMembership {
+  id: CanvasId
+  group_id: CanvasId
+  user_id: CanvasId
+  workflow_state: string
+  moderator: boolean
+  just_created?: boolean
+}
+
 // --- Modules ---
 
 export interface CanvasModule {
